@@ -11,5 +11,14 @@ db = sql(app)
 def Home():
     return render("index.html")
 
+
+@app.route('/login')
+def Login():
+    return render("login.html")
+
+@app.route('/register')
+def Register():
+    return render("register.html")
+
 if __name__ == "__main__":
     app.run(debug=True)
