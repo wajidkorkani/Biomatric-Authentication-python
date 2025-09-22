@@ -1,117 +1,78 @@
-from flask import Flask, render_template as render, redirect, url_for, request, session, flash
-from flask_sqlalchemy import SQLAlchemy as sql
-import face_recognition
-import numpy as np
-import cv2
-import os
-import pickle
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
+# Initialize app
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
+app.config['SECRET_KEY'] = 'yoursecretkey'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
-# Database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///biometric.db'
-db = sql(app)
+# Setup Flask-Login
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
 
 # User Model
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    face_encoding = db.Column(db.PickleType, nullable=False)  # store numpy array as pickle
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-# Home Page
+# Routes
 @app.route('/')
-def Home():
-    if "user" in session:
-        return f"Welcome {session['user']}!"
-    return render("index.html")
+@login_required
+def home():
+    return render_template('home.html', name=current_user.username)
 
-
-@app.route('/register', methods=['GET', 'POST'])
-def Register():
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
     if request.method == 'POST':
         username = request.form['username']
+        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
 
-        # Capture image from webcam
-        video = cv2.VideoCapture(0)
-        ret, frame = video.read()
-        video.release()
+        user = User.query.filter_by(username=username).first()
+        if user:
+            flash("Username already exists!", "danger")
+            return redirect(url_for('signup'))
 
-        if not ret:
-            flash("Failed to capture image.")
-            return redirect(url_for("Register"))
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash("Account created! Please login.", "success")
+        return redirect(url_for('login'))
 
-        # Convert to RGB
-        rgb_frame = frame[:, :, ::-1]
+    return render_template('register.html')
 
-        # Detect faces and get encodings
-        face_locations = face_recognition.face_locations(rgb_frame)
-        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-
-        if face_encodings:
-            encoding = face_encodings[0]
-
-            # Save user to DB
-            new_user = User(username=username, face_encoding=encoding)
-            db.session.add(new_user)
-            db.session.commit()
-
-            flash("Registration successful. You can now login.")
-            return redirect(url_for("Login"))
-        else:
-            flash("No face detected, please try again.")
-            return redirect(url_for("Register"))
-
-    return render("register.html")
-
-
-# Login Route - Face Recognition
 @app.route('/login', methods=['GET', 'POST'])
-def Login():
+def login():
     if request.method == 'POST':
-        # Capture image from webcam
-        video = cv2.VideoCapture(0)
-        ret, frame = video.read()
-        video.release()
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
 
-        if not ret:
-            flash("Failed to capture image.")
-            return redirect(url_for("Login"))
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user)
+            flash("Login successful!", "success")
+            return redirect(url_for('home'))
+        else:
+            flash("Invalid credentials", "danger")
 
-        # Encode the face
-        rgb_frame = frame[:, :, ::-1]
-        face_locations = face_recognition.face_locations(rgb_frame)
-        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+    return render_template('login.html')
 
-
-        if face_encodings:
-            login_encoding = face_encodings[0]
-
-            # Compare with stored users
-            users = User.query.all()
-            for user in users:
-                match = face_recognition.compare_faces([user.face_encoding], login_encoding)
-                if match[0]:
-                    session["user"] = user.username
-                    flash("Login successful!")
-                    return redirect(url_for("Home"))
-
-        flash("Authentication failed. Try again.")
-        return redirect(url_for("Login"))
-
-    return render("login.html")
-
-
-# Logout Route
 @app.route('/logout')
-def Logout():
-    session.pop("user", None)
-    flash("Logged out successfully.")
-    return redirect(url_for("Home"))
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.", "info")
+    return redirect(url_for('login'))
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
