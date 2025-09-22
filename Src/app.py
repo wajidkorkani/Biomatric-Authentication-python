@@ -28,7 +28,6 @@ def Home():
     return render("index.html")
 
 
-# Register Route - Capture Face & Save Encoding
 @app.route('/register', methods=['GET', 'POST'])
 def Register():
     if request.method == 'POST':
@@ -43,9 +42,12 @@ def Register():
             flash("Failed to capture image.")
             return redirect(url_for("Register"))
 
-        # Encode the face
+        # Convert to RGB
         rgb_frame = frame[:, :, ::-1]
-        face_encodings = face_recognition.face_encodings(rgb_frame)
+
+        # Detect faces and get encodings
+        face_locations = face_recognition.face_locations(rgb_frame)
+        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
         if face_encodings:
             encoding = face_encodings[0]
@@ -77,8 +79,11 @@ def Login():
             flash("Failed to capture image.")
             return redirect(url_for("Login"))
 
+        # Encode the face
         rgb_frame = frame[:, :, ::-1]
-        face_encodings = face_recognition.face_encodings(rgb_frame)
+        face_locations = face_recognition.face_locations(rgb_frame)
+        face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+
 
         if face_encodings:
             login_encoding = face_encodings[0]
