@@ -29,12 +29,14 @@
 <body>
     <div class="form-container">
         <h2 class="text-center mb-4" style="color:#008080;">Register</h2>
-        <form method="POST">
+        <form method="POST" action="/signup" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Username</label>
                 <input type="text" name="username" class="form-control" required>
+                
+                <label class="form-label">Password</label>
+                <input type="text" name="passwrod" class="form-control" required>
             </div>
-            <p class="text-muted">Your face will be captured automatically from the webcam.</p>
             <button type="submit" class="btn btn-teal w-100">Register with Face</button>
         </form>
         <div class="text-center mt-3">
