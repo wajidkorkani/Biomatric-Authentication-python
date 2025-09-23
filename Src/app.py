@@ -33,7 +33,8 @@ def home():
 def signup():
     if request.method == 'POST':
         username = request.form['username']
-        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+        password = request.form['password']
+        # password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
 
         user = User.query.filter_by(username=username).first()
         if user:
@@ -46,7 +47,12 @@ def signup():
         flash("Account created! Please login.", "success")
         return redirect(url_for('login'))
 
+    return redirect(url_for('login'))
+
+@app.route('/register')
+def register():
     return render_template('register.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
