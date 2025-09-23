@@ -10,54 +10,11 @@
     <div class="container">
         <h2>Login</h2>
         <form id="loginForm" method="POST" action="/login" enctype="multipart/form-data">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-
-            <label>Live Biometric (Webcam):</label>
-            <video id="video" autoplay></video>
-            <button type="button" id="captureBtn">Capture Biometric</button>
-            <input type="hidden" id="biometric" name="biometric">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
 
             <button type="submit" id="submitBtn" disabled>Login</button>
         </form>
     </div>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; }
-        .container { max-width: 400px; margin: 60px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; margin-bottom: 24px; }
-        input[type="text"] { width: 100%; padding: 10px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; }
-        button { width: 100%; padding: 10px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
-        button:disabled { background: #aaa; }
-        #video { width: 100%; border-radius: 4px; margin-bottom: 12px; }
-    </style>
-    <script>
-        const video = document.getElementById('video');
-        const captureBtn = document.getElementById('captureBtn');
-        const submitBtn = document.getElementById('submitBtn');
-        const biometricInput = document.getElementById('biometric');
-
-        // Access webcam
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                alert('Could not access webcam.');
-                captureBtn.disabled = true;
-            });
-
-        captureBtn.onclick = function() {
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const dataURL = canvas.toDataURL('image/png');
-            biometricInput.value = dataURL;
-            submitBtn.disabled = false;
-            captureBtn.textContent = 'Captured!';
-            captureBtn.disabled = true;
-        };
-    </script>
 </body>
 </html>
