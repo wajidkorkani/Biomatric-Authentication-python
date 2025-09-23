@@ -26,9 +26,8 @@ def load_user(user_id):
 
 # Routes
 @app.route('/')
-@login_required
 def home():
-    return render_template('home.html', name=current_user.username)
+    return render_template('index.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
