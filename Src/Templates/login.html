@@ -4,16 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        body {
+            background-color: #e0f7f7;
+            color: #004d4d;
+        }
+        h1{
+            font-size: 60px;
+            text-align: center;
+        }
+        input{
+            padding: 10px;
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-radius: 5px;
+        }
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 450px;
+            margin: 50px auto;
+        }
+        .btn-teal {
+            background-color: #008080;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            font-size: 30px;
+            border-radius: 5px;
+        }
+        .btn-teal:hover {
+            background-color: #006666;
+        }
+    </style>
 </head>
 <body>
 </body>
     <div class="container">
-        <h2>Login</h2>
-        <form id="loginForm" method="POST" action="/login" enctype="multipart/form-data">
+        <h1>Login</h1>
+        <form id="loginForm" class="form-container" method="POST" action="/login" enctype="multipart/form-data">
             <input type="text" id="username" name="username" placeholder="Username" required>
+            <br><br>
             <input type="password" id="password" name="password" placeholder="Password" required>
 
-            <button type="submit" id="submitBtn">Login</button>
+            <button class="btn-teal" type="submit" id="submitBtn">Login</button>
         </form>
     </div>
 </body>
