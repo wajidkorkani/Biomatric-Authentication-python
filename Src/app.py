@@ -36,10 +36,10 @@ def signup():
         password = request.form['password']
         # password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
 
-        user = User.query.filter_by(username=username).first()
-        if user:
-            flash("Username already exists!", "danger")
-            return redirect(url_for('signup'))
+        # user = User.query.filter_by(username=username).first()
+        # if user:
+        #     flash("Username already exists!", "danger")
+        #     return redirect(url_for('signup'))
 
         new_user = User(username=username, password=password)
         db.session.add(new_user)
@@ -61,7 +61,8 @@ def login():
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
 
-        if user and bcrypt.check_password_hash(user.password, password):
+        # if user and bcrypt.check_password_hash(user.password, password):
+        if user:
             login_user(user)
             flash("Login successful!", "success")
             return redirect(url_for('home'))
