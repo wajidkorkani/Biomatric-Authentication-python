@@ -12,15 +12,17 @@
         h1{
             font-size: 60px;
             text-align: center;
+            color: #008080;
         }
         input{
             padding: 10px;
-            border: none;
+            border: 1px #008080 solid;
             outline: none;
             width: 100%;
             margin-bottom: 15px;
             font-size: 20px;
             border-radius: 5px;
+            color: #008080;
         }
         .form-container {
             background: white;
@@ -47,8 +49,8 @@
 <body>
 </body>
     <div class="container">
-        <h1>Login</h1>
         <form id="loginForm" class="form-container" method="POST" action="/login" enctype="multipart/form-data">
+            <h1>Login</h1>
             <input type="text" id="username" name="username" placeholder="Username" required>
             <br><br>
             <input type="password" id="password" name="password" placeholder="Password" required>
