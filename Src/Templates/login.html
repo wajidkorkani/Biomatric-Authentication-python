@@ -4,11 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #e0f7f7;
             color: #004d4d;
         }
+
+        .navbar {
+            background-color: #008080;
+        }
+        .navbar a {
+            color: white !important;
+        }
+
         h1{
             font-size: 60px;
             text-align: center;
@@ -61,6 +70,20 @@
 </head>
 <body>
 </body>
+
+    <nav class="navbar navbar-expand-lg px-4">
+        <a class="navbar-brand text-white fw-bold" href="/">Biometric Auth</a>
+        <div class="ms-auto">
+            {% if current_user.is_authenticated %}
+                <a href="/logout" class="btn btn-light btn-sm me-2">Logout</a>
+            {% else %}
+                <a href="/login" class="btn btn-light btn-sm me-2">Login</a>
+                <a href="/register" class="btn btn-light btn-sm">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+
     <div class="container">
         <form id="loginForm" class="form-container" method="POST" action="/login" enctype="multipart/form-data">
             <h1>Login</h1>
