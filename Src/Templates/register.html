@@ -9,6 +9,14 @@
             background-color: #e0f7f7;
             color: #004d4d;
         }
+
+        .navbar {
+            background-color: #008080;
+        }
+        .navbar a {
+            color: white !important;
+        }
+
         .form-container {
             background: white;
             border-radius: 15px;
@@ -39,6 +47,19 @@
     </style>
 </head>
 <body>
+
+    <nav class="navbar navbar-expand-lg px-4">
+        <a class="navbar-brand text-white fw-bold" href="/">Biometric Auth</a>
+        <div class="ms-auto">
+            {% if current_user.is_authenticated %}
+                <a href="/logout" class="btn btn-light btn-sm me-2">Logout</a>
+            {% else %}
+                <a href="/login" class="btn btn-light btn-sm me-2">Login</a>
+                <a href="/register" class="btn btn-light btn-sm">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
     <div class="form-container">
         <h2 class="text-center mb-4" style="color:#008080;">Register</h2>
         <form method="POST" action="/signup" enctype="multipart/form-data">
