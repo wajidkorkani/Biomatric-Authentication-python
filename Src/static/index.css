@@ -2,12 +2,15 @@ body {
     background-color: #e0f7f7;
     color: #004d4d;
 }
+
 .navbar {
     background-color: #008080;
 }
+
 .navbar a {
     color: white !important;
 }
+
 .card {
     background: white;
     border-radius: 15px;
